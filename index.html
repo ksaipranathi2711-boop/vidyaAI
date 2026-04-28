@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidyaAI — STEM Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0e1117;--bg2:#151b26;--bg3:#1c2436;--surface:#232d42;
+  --border:#2d3a52;--border2:#374561;
+  --primary:#f97316;--primary-dark:#c2410c;--primary-glow:rgba(249,115,22,0.3);
+  --teal:#14b8a6;--gold:#f59e0b;--violet:#8b5cf6;--rose:#f43f5e;--green:#22c55e;--blue:#3b82f6;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.splash-glow{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(249,115,22,0.18),transparent 70%);pointer-events:none;animation:glowPulse 2.5s ease-in-out infinite alternate}
+@keyframes glowPulse{from{opacity:0.5;transform:scale(0.9)}to{opacity:1;transform:scale(1.1)}}
+.splash-logo-wrap{position:relative;width:130px;height:130px;display:flex;align-items:center;justify-content:center;animation:splashAppear 0.8s ease-out both}
+@keyframes splashAppear{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.splash-logo-bg{width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,#f97316,#ff3d6e,#c2410c);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(249,115,22,0.5),0 0 120px rgba(249,115,22,0.2);position:relative;overflow:hidden}
+.splash-logo-emoji{font-size:3.8rem;z-index:1}
+.splash-ring{position:absolute;inset:-8px;border-radius:36px;border:2px solid rgba(249,115,22,0.5);animation:ringPulse 2s ease-in-out infinite}
+.splash-ring2{position:absolute;inset:-16px;border-radius:42px;border:1px solid rgba(249,115,22,0.25);animation:ringPulse 2s ease-in-out infinite 0.4s}
+@keyframes ringPulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.03)}}
+.splash-brand{animation:splashAppear 0.8s ease-out 0.3s both;text-align:center;margin-top:20px}
+.splash-title{font-size:2.6rem;font-weight:900;letter-spacing:-1px;color:#fff}
+.splash-title span{color:var(--primary)}
+.splash-sub{font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-top:4px;font-weight:700}
+.splash-loader{margin-top:36px;animation:splashAppear 0.8s ease-out 0.6s both}
+.splash-bar-wrap{width:220px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.splash-bar-fill{height:100%;border-radius:2px;width:0%;background:linear-gradient(90deg,var(--primary),var(--violet),var(--primary));background-size:200% 100%;animation:loadFill 2.2s cubic-bezier(0.4,0,0.2,1) forwards}
+@keyframes loadFill{0%{width:0%}60%{width:80%}80%{width:90%}100%{width:100%}}
+.splash-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
+.splash-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);animation:dotBounce 1.2s ease-in-out infinite}
+.splash-dot:nth-child(2){animation-delay:0.2s}.splash-dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotBounce{0%,100%{background:var(--border2);transform:scale(1)}50%{background:var(--primary);transform:scale(1.4)}}
+.splash-fade-out{animation:fadeOut 0.6s ease forwards!important}
+@keyframes fadeOut{to{opacity:0;pointer-events:none}}
+
+/* AUTH */
+#authPage{display:none;min-height:100vh;position:relative;overflow:hidden;background:var(--bg)}
+.auth-mesh{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 20%,rgba(249,115,22,0.1),transparent),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(139,92,246,0.1),transparent)}
+.auth-grid-overlay{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(45,58,82,0.35) 1px,transparent 1px),linear-gradient(90deg,rgba(45,58,82,0.35) 1px,transparent 1px);background-size:48px 48px}
+.auth-wrap{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-layout{display:flex;gap:60px;align-items:center;max-width:1000px;width:100%}
+.auth-hero{flex:1;max-width:440px}
+.auth-hero-logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:32px}
+.auth-hero-logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--primary),#ff3d6e);display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 6px 20px var(--primary-glow)}
+.auth-hero-logo-text{font-size:1.4rem;font-weight:900;color:#fff}
+.auth-hero-logo-text span{color:var(--primary)}
+.auth-hero h1{font-size:2.8rem;font-weight:900;line-height:1.1;margin-bottom:14px;letter-spacing:-1px}
+.auth-hero h1 em{font-style:normal;color:var(--primary)}
+.auth-hero p{color:var(--text2);line-height:1.7;font-size:0.95rem;margin-bottom:28px}
+.auth-features-list{display:flex;flex-direction:column;gap:10px}
+.auth-feat{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.12)}
+.auth-feat-icon{font-size:1.3rem;width:32px;text-align:center;flex-shrink:0}
+.auth-feat-text{font-size:0.85rem;color:var(--text2)}
+.auth-feat-text strong{display:block;color:var(--text);font-size:0.88rem;margin-bottom:1px}
+
+/* Card */
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;width:400px;flex-shrink:0;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--violet),var(--teal))}
+.auth-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:26px}
+.auth-tab{flex:1;padding:9px 4px;border-radius:7px;border:none;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;background:transparent;color:var(--text3);transition:all 0.2s}
+.auth-tab.active{background:var(--primary);color:#fff;box-shadow:0 3px 10px var(--primary-glow)}
+.form-grp{margin-bottom:16px}
+.form-lbl{display:block;font-size:0.78rem;font-weight:800;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase}
+.form-inp{width:100%;padding:11px 14px;border-radius:var(--radius-sm);background:var(--bg3);border:1.5px solid var(--border2);font-family:'Nunito',sans-serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.form-inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(249,115,22,0.12)}
+.form-inp::placeholder{color:var(--text3)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:1.1rem;padding:4px}
+.btn-submit{width:100%;padding:12px;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;border:none;cursor:pointer;margin-top:4px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 18px var(--primary-glow);transition:all 0.2s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px var(--primary-glow)}
+.auth-err{display:none;margin-top:12px;padding:10px 14px;border-radius:8px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);color:var(--rose);font-size:0.82rem;font-weight:600}
+.register-link{text-align:center;font-size:0.82rem;color:var(--text3);margin-top:14px}
+.register-link a{color:var(--primary);font-weight:700;cursor:pointer;text-decoration:none}
+.register-link a:hover{text-decoration:underline}
+.teacher-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;color:var(--violet);margin-bottom:16px}
+
+#appFrame{display:none;width:100%;height:100vh;border:none}
+
+@media(max-width:768px){.auth-hero{display:none}.auth-card{width:100%;max-width:420px}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-glow"></div>
+  <div class="splash-logo-wrap">
+    <div class="splash-logo-bg"><span class="splash-logo-emoji">🌱</span></div>
+    <div class="splash-ring"></div><div class="splash-ring2"></div>
+  </div>
+  <div class="splash-brand">
+    <div class="splash-title">Vidya<span>AI</span></div>
+    <div class="splash-sub">Inclusive STEM Learning</div>
+  </div>
+  <div class="splash-loader">
+    <div class="splash-bar-wrap"><div class="splash-bar-fill"></div></div>
+    <div class="splash-dots">
+      <div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH PAGE -->
+<div id="authPage">
+  <div class="auth-mesh"></div>
+  <div class="auth-grid-overlay"></div>
+  <div class="auth-wrap">
+    <div class="auth-layout">
+
+      <!-- LEFT HERO -->
+      <div class="auth-hero">
+        <div class="auth-hero-logo">
+          <div class="auth-hero-logo-icon">🌱</div>
+          <div class="auth-hero-logo-text">Vidya<span>AI</span></div>
+        </div>
+        <h1>Learn STEM<br>the <em>smart</em> way</h1>
+        <p>India's most inclusive AI-powered STEM platform for Class 6–12. Learn in your language, at your pace, with real labs and quizzes.</p>
+        <div class="auth-features-list">
+          <div class="auth-feat"><div class="auth-feat-icon">🎥</div><div class="auth-feat-text"><strong>Video + Text Lessons</strong>Watch, read, understand — every concept clearly</div></div>
+          <div class="auth-feat"><div class="auth-feat-icon">🔬</div><div class="auth-feat-text"><strong>Virtual Labs</strong>Ohm's Law, Projectile Motion, Pendulum & more</div></div>
+          <div class="auth-feat"><div class="auth-feat-icon">🤖</div><div class="auth-feat-text"><strong>AI Tutor</strong>Ask any question in English or हिंदी</div></div>
+          <div class="auth-feat"><div class="auth-feat-icon">📶</div><div class="auth-feat-text"><strong>Works Offline</strong>Download lessons for areas with low connectivity</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT CARD -->
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchRole('student',this)">🎓 Student</button>
+          <button class="auth-tab" onclick="switchRole('teacher',this)">👩‍🏫 Teacher</button>
+        </div>
+
+        <!-- STUDENT LOGIN -->
+        <div id="student-panel">
+          <div id="student-login-view">
+            <div style="text-align:center;margin-bottom:20px">
+              <div style="font-size:2rem;margin-bottom:6px">🎓</div>
+              <div style="font-size:1.1rem;font-weight:900">Student Login</div>
+              <div style="font-size:0.8rem;color:var(--text3);margin-top:4px">Sign in with your username &amp; password</div>
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Username</label>
+              <input class="form-inp" type="text" id="s-username" placeholder="Enter your username" oninput="clearAuthErr('s-err')">
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Password</label>
+              <div class="pw-wrap">
+                <input class="form-inp" type="password" id="s-password" placeholder="Enter your password" oninput="clearAuthErr('s-err')" onkeydown="if(event.key==='Enter')doStudentLogin()">
+                <button class="pw-toggle" onclick="togglePw('s-password',this)" type="button">👁</button>
+              </div>
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Class / Grade</label>
+              <select class="form-inp" id="s-class">
+                <option>Class 6</option><option>Class 7</option><option>Class 8</option>
+                <option selected>Class 9</option><option>Class 10</option>
+                <option>Class 11</option><option>Class 12</option>
+              </select>
+            </div>
+            <button class="btn-submit" onclick="doStudentLogin()">🚀 Login →</button>
+            <div class="auth-err" id="s-err"></div>
+            <div class="register-link">Don't have an account? <a onclick="showStudentRegister()">Register here</a></div>
+          </div>
+
+          <!-- STUDENT REGISTER VIEW -->
+          <div id="student-register-view" style="display:none">
+            <div style="text-align:center;margin-bottom:20px">
+              <div style="font-size:2rem;margin-bottom:6px">📝</div>
+              <div style="font-size:1.1rem;font-weight:900">Create Account</div>
+              <div style="font-size:0.8rem;color:var(--text3);margin-top:4px">Register as a student</div>
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Full Name</label>
+              <input class="form-inp" type="text" id="r-name" placeholder="Your full name" oninput="clearAuthErr('r-err')">
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Username</label>
+              <input class="form-inp" type="text" id="r-username" placeholder="Choose a username" oninput="clearAuthErr('r-err')">
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Password</label>
+              <div class="pw-wrap">
+                <input class="form-inp" type="password" id="r-password" placeholder="Min 6 characters" oninput="clearAuthErr('r-err')">
+                <button class="pw-toggle" onclick="togglePw('r-password',this)" type="button">👁</button>
+              </div>
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Class / Grade</label>
+              <select class="form-inp" id="r-class">
+                <option>Class 6</option><option>Class 7</option><option>Class 8</option>
+                <option selected>Class 9</option><option>Class 10</option>
+                <option>Class 11</option><option>Class 12</option>
+              </select>
+            </div>
+            <button class="btn-submit" onclick="doRegister()">✅ Create Account →</button>
+            <div class="auth-err" id="r-err"></div>
+            <div class="register-link">Already have an account? <a onclick="showStudentLogin()">Login here</a></div>
+          </div>
+        </div>
+
+        <!-- TEACHER LOGIN -->
+        <div id="teacher-panel" style="display:none">
+          <div class="teacher-badge">👩‍🏫 Teacher Portal</div>
+          <div style="text-align:center;margin-bottom:20px">
+            <div style="font-size:2rem;margin-bottom:6px">👩‍🏫</div>
+            <div style="font-size:1.1rem;font-weight:900">Teacher Login</div>
+            <div style="font-size:0.8rem;color:var(--text3);margin-top:4px">Access your class dashboard &amp; analytics</div>
+          </div>
+          <div class="form-grp">
+            <label class="form-lbl">Teacher ID / Username</label>
+            <input class="form-inp" type="text" id="t-username" placeholder="Enter your Teacher ID" oninput="clearAuthErr('t-err')">
+          </div>
+          <div class="form-grp">
+            <label class="form-lbl">Password</label>
+            <div class="pw-wrap">
+              <input class="form-inp" type="password" id="t-password" placeholder="Enter your password" oninput="clearAuthErr('t-err')" onkeydown="if(event.key==='Enter')doTeacherLogin()">
+              <button class="pw-toggle" onclick="togglePw('t-password',this)" type="button">👁</button>
+            </div>
+          </div>
+          <!-- Teacher Register link -->
+          <button class="btn-submit" style="background:linear-gradient(135deg,var(--violet),#6d28d9)" onclick="doTeacherLogin()">🏫 Login as Teacher →</button>
+          <div class="auth-err" id="t-err"></div>
+          <div style="margin-top:12px;text-align:center;font-size:0.8rem;color:var(--text3)">New teacher? <a style="color:var(--violet);font-weight:700;cursor:pointer" onclick="showTeacherRegister()">Register here</a></div>
+          
+          <!-- Teacher Register View -->
+          <div id="teacher-register-view" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+            <div style="font-size:0.88rem;font-weight:800;margin-bottom:12px;color:var(--violet)">📝 Register as Teacher</div>
+            <div class="form-grp">
+              <label class="form-lbl">Full Name</label>
+              <input class="form-inp" type="text" id="tr-name" placeholder="Your full name" oninput="clearAuthErr('tr-err')">
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Teacher ID / Username</label>
+              <input class="form-inp" type="text" id="tr-username" placeholder="Choose your ID" oninput="clearAuthErr('tr-err')">
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Password</label>
+              <div class="pw-wrap">
+                <input class="form-inp" type="password" id="tr-password" placeholder="Min 6 characters" oninput="clearAuthErr('tr-err')">
+                <button class="pw-toggle" onclick="togglePw('tr-password',this)" type="button">👁</button>
+              </div>
+            </div>
+            <div class="form-grp">
+              <label class="form-lbl">Subject</label>
+              <select class="form-inp" id="tr-subject">
+                <option>Science</option><option>Mathematics</option><option>Physics</option>
+                <option>Chemistry</option><option>Biology</option><option>Environmental Science</option>
+              </select>
+            </div>
+            <button class="btn-submit" style="background:linear-gradient(135deg,var(--violet),#6d28d9)" onclick="doTeacherRegister()">✅ Register as Teacher →</button>
+            <div class="auth-err" id="tr-err"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP (iframe) -->
+<iframe id="appFrame" src="platform.html" title="VidyaAI Platform"></iframe>
+
+<script>
+/* ══════════════════════════════════════
+   USER STORE (localStorage)
+   KEY: vidyaai_users_v3 — used by BOTH index.html and platform.html teacher view
+══════════════════════════════════════ */
+const USERS_KEY = 'vidyaai_users_v3';
+function getUsers() {
+  const d = localStorage.getItem(USERS_KEY);
+  if (d) return JSON.parse(d);
+  const defaults = { students: [], teachers: [] };
+  localStorage.setItem(USERS_KEY, JSON.stringify(defaults));
+  return defaults;
+}
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+function hasAnyRegisteredUsers() {
+  const u = getUsers();
+  return u.students.length > 0 || u.teachers.length > 0;
+}
+
+let currentRole = 'student';
+let currentUser = null;
+
+function switchRole(role, btn) {
+  currentRole = role;
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('student-panel').style.display = role === 'student' ? 'block' : 'none';
+  document.getElementById('teacher-panel').style.display = role === 'teacher' ? 'block' : 'none';
+}
+function showStudentRegister() {
+  document.getElementById('student-login-view').style.display = 'none';
+  document.getElementById('student-register-view').style.display = 'block';
+}
+function showStudentLogin() {
+  document.getElementById('student-register-view').style.display = 'none';
+  document.getElementById('student-login-view').style.display = 'block';
+}
+function showTeacherRegister() {
+  const rv = document.getElementById('teacher-register-view');
+  rv.style.display = rv.style.display === 'none' ? 'block' : 'none';
+}
+function clearAuthErr(id) { const el=document.getElementById(id); if(el)el.style.display='none'; }
+function showAuthErr(id, msg) { const el=document.getElementById(id); el.textContent='⚠ '+msg; el.style.display='block'; }
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+/* ── STUDENT LOGIN ── */
+function doStudentLogin() {
+  const username = document.getElementById('s-username').value.trim().toLowerCase();
+  const password = document.getElementById('s-password').value;
+  const cls = document.getElementById('s-class').value;
+  if (!username) { showAuthErr('s-err', 'Please enter your username.'); return; }
+  if (!password) { showAuthErr('s-err', 'Please enter your password.'); return; }
+  const users = getUsers();
+  const found = users.students.find(u => u.username === username && u.password === password);
+  if (!found) { showAuthErr('s-err', 'Incorrect username or password. Please try again.'); return; }
+  currentUser = { ...found, class: cls, role: 'student' };
+  sessionStorage.setItem('vidyaai_user_v3', JSON.stringify(currentUser));
+  launchApp();
+}
+
+/* ── STUDENT REGISTER ── */
+function doRegister() {
+  const name = document.getElementById('r-name').value.trim();
+  const username = document.getElementById('r-username').value.trim().toLowerCase();
+  const password = document.getElementById('r-password').value;
+  const cls = document.getElementById('r-class').value;
+  if (!name) { showAuthErr('r-err', 'Please enter your full name.'); return; }
+  if (!username || username.length < 3) { showAuthErr('r-err', 'Username must be at least 3 characters.'); return; }
+  if (!password || password.length < 6) { showAuthErr('r-err', 'Password must be at least 6 characters.'); return; }
+  if (!/^[a-z0-9_]+$/.test(username)) { showAuthErr('r-err', 'Username can only contain letters, numbers, and underscores.'); return; }
+  const users = getUsers();
+  if (users.students.find(u => u.username === username)) { showAuthErr('r-err', 'Username already taken. Choose another.'); return; }
+  // Store with registeredAt so teacher view can show join date
+  users.students.push({ username, password, name, class: cls, registeredAt: Date.now() });
+  saveUsers(users);
+  currentUser = { username, name, class: cls, role: 'student' };
+  sessionStorage.setItem('vidyaai_user_v3', JSON.stringify(currentUser));
+  launchApp();
+}
+
+/* ── TEACHER LOGIN ── */
+function doTeacherLogin() {
+  const username = document.getElementById('t-username').value.trim().toLowerCase();
+  const password = document.getElementById('t-password').value;
+  if (!username) { showAuthErr('t-err', 'Please enter your Teacher ID.'); return; }
+  if (!password) { showAuthErr('t-err', 'Please enter your password.'); return; }
+  const users = getUsers();
+  const found = users.teachers.find(u => u.username === username && u.password === password);
+  if (!found) { showAuthErr('t-err', 'Incorrect Teacher ID or password.'); return; }
+  currentUser = { ...found, role: 'teacher' };
+  sessionStorage.setItem('vidyaai_user_v3', JSON.stringify(currentUser));
+  launchApp();
+}
+
+/* ── TEACHER REGISTER ── */
+function doTeacherRegister() {
+  const name = document.getElementById('tr-name').value.trim();
+  const username = document.getElementById('tr-username').value.trim().toLowerCase();
+  const password = document.getElementById('tr-password').value;
+  const subject = document.getElementById('tr-subject').value;
+  if (!name) { showAuthErr('tr-err', 'Please enter your full name.'); return; }
+  if (!username || username.length < 3) { showAuthErr('tr-err', 'Username must be at least 3 characters.'); return; }
+  if (!password || password.length < 6) { showAuthErr('tr-err', 'Password must be at least 6 characters.'); return; }
+  if (!/^[a-z0-9_]+$/.test(username)) { showAuthErr('tr-err', 'Username: only letters, numbers, underscores.'); return; }
+  const users = getUsers();
+  if (users.teachers.find(u => u.username === username)) { showAuthErr('tr-err', 'Teacher ID already taken.'); return; }
+  users.teachers.push({ username, password, name, subject, registeredAt: Date.now() });
+  saveUsers(users);
+  currentUser = { username, name, subject, role: 'teacher' };
+  sessionStorage.setItem('vidyaai_user_v3', JSON.stringify(currentUser));
+  launchApp();
+}
+
+/* ── LAUNCH APP ── */
+function launchApp() {
+  document.getElementById('authPage').style.display = 'none';
+  const frame = document.getElementById('appFrame');
+  frame.style.display = 'block';
+  frame.onload = () => {
+    try { frame.contentWindow.postMessage({ type: 'USER_LOGIN', user: currentUser }, '*'); } catch(e) {}
+  };
+  try { frame.contentWindow.postMessage({ type: 'USER_LOGIN', user: currentUser }, '*'); } catch(e) {}
+}
+
+/* ── LOGOUT from app ── */
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'LOGOUT') {
+    sessionStorage.removeItem('vidyaai_user_v3');
+    currentUser = null;
+    document.getElementById('appFrame').style.display = 'none';
+    document.getElementById('authPage').style.display = 'block';
+    // Reset forms
+    document.getElementById('s-username').value = '';
+    document.getElementById('s-password').value = '';
+    // If returning user, show login view (not register)
+    if (hasAnyRegisteredUsers()) {
+      showStudentLogin();
+      // Show a friendly welcome-back hint
+      const hint = document.getElementById('s-err');
+      if (hint) {
+        hint.style.display = 'block';
+        hint.style.background = 'rgba(20,184,166,0.1)';
+        hint.style.borderColor = 'rgba(20,184,166,0.25)';
+        hint.style.color = 'var(--teal)';
+        hint.textContent = '👋 Welcome back! Sign in with your username and password.';
+      }
+    }
+  }
+});
+
+/* ── INIT ── */
+window.addEventListener('load', () => {
+  const saved = sessionStorage.getItem('vidyaai_user_v3');
+  if (saved) currentUser = JSON.parse(saved);
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('splash-fade-out');
+    setTimeout(() => {
+      splash.style.display = 'none';
+      if (currentUser) {
+        launchApp();
+      } else {
+        document.getElementById('authPage').style.display = 'block';
+        // Smart detection: if anyone has registered before, default to login view
+        if (hasAnyRegisteredUsers()) {
+          // Keep on login view and show welcome-back message
+          const hint = document.getElementById('s-err');
+          if (hint) {
+            hint.style.display = 'block';
+            hint.style.background = 'rgba(20,184,166,0.1)';
+            hint.style.borderColor = 'rgba(20,184,166,0.25)';
+            hint.style.color = 'var(--teal)';
+            hint.textContent = '👋 Welcome back! Sign in with your username and password.';
+          }
+        }
+        // else: show default auth page as-is (new user sees Register link)
+      }
+    }, 600);
+  }, 2600);
+});
+</script>
+</body>
+</html>
